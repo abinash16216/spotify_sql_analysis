@@ -186,7 +186,7 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 		order by 3;
 ```
 
-3. **Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.**
+3. Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.
 ```sql
 		WITH minMaxenergy
 		as
