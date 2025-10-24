@@ -202,8 +202,37 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 ```
    
 5. Find tracks where the energy-to-liveness ratio is greater than 1.2.
-6. Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
+```sql
+		select track,energy,liveness ,energy/liveness as energy_to_liveness_ratio
+		from spotify
+		where liveness !=0 and energy/liveness >1.2
+		order by 4 desc;
 
+		-- OR
+
+		select * from 
+		(select 
+				track,
+				energy,
+				liveness,
+				energy/liveness as ratio
+		from spotify
+		where liveness !=0)
+		where ratio >1.2
+		order by 4 desc;
+```
+		
+6. Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
+```sql
+		select 
+			artist,
+			track,
+			views,
+			likes,
+			sum(likes) over(order by views asc) as total_likes
+		from spotify
+		order by 3 desc;
+```
 
 Here’s an updated section for your **Spotify Advanced SQL Project and Query Optimization** README, focusing on the query optimization task you performed. You can include the specific screenshots and graphs as described.
 
@@ -211,7 +240,24 @@ Here’s an updated section for your **Spotify Advanced SQL Project and Query Op
 
 ## Query Optimization Technique 
 
-To improve query performance, we carried out the following optimization process:
+To improve quer
+		select track,energy,liveness ,energy/liveness as energy_to_liveness_ratio
+from spotify
+where liveness !=0 and energy/liveness >1.2
+order by 4 desc;
+
+-- OR
+
+select * from 
+(select 
+		track,
+		energy,
+		liveness,
+		energy/liveness as ratio
+from spotify
+where liveness !=0)
+where ratio >1.2
+order by 4 desc;y performance, we carried out the following optimization process:
 
 - **Initial Query Performance Analysis Using `EXPLAIN`**
     - We began by analyzing the performance of a query using the `EXPLAIN` function.
