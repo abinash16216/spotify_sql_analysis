@@ -240,24 +240,7 @@ Here’s an updated section for your **Spotify Advanced SQL Project and Query Op
 
 ## Query Optimization Technique 
 
-To improve quer
-		select track,energy,liveness ,energy/liveness as energy_to_liveness_ratio
-from spotify
-where liveness !=0 and energy/liveness >1.2
-order by 4 desc;
-
--- OR
-
-select * from 
-(select 
-		track,
-		energy,
-		liveness,
-		energy/liveness as ratio
-from spotify
-where liveness !=0)
-where ratio >1.2
-order by 4 desc;y performance, we carried out the following optimization process:
+To improve query performance, we carried out the following optimization process:
 
 - **Initial Query Performance Analysis Using `EXPLAIN`**
     - We began by analyzing the performance of a query using the `EXPLAIN` function.
