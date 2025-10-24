@@ -69,38 +69,136 @@ In advanced stages, the focus shifts to improving query performance. Some optimi
 ## 15 Practice Questions
 
 ### Easy Level
-1. Retrieve the names of all tracks that have more than 1 billion streams.
+1. Retrieve the names of all tracks that have more than 1 billion streams. 
+```sql
+		select track, artist, stream
+		from spotify 
+		where stream > 100000000
+		order by stream desc;
+```
+		
 2. List all albums along with their respective artists.
+```sql
+		select title , artist
+		from spotify;
+```
+
 3. Get the total number of comments for tracks where `licensed = TRUE`.
+```sql
+		select sum(comments) as total_commenct
+		from spotify 
+		where licensed = 'true';
+```
+
 4. Find all tracks that belong to the album type `single`.
+```sql
+		select album_type,track 
+		from spotify 
+		where album_type = 'single';
+```
+
 5. Count the total number of tracks by each artist.
+```sql
+		select artist , 
+		count(track) as no_of_track
+		from spotify
+		group by artist;
+```
 
 ### Medium Level
 1. Calculate the average danceability of tracks in each album.
+```sql
+		select album , avg(danceability) as average_danceability,artist
+		from spotify
+		group by 1 ,3
+		order by 2 desc; --Funkey friday has highest danciablity
+```
+
 2. Find the top 5 tracks with the highest energy values.
+```sql
+		select distinct(energy_liveness),track,artist
+		from spotify
+		where energy_liveness is not null
+		order by 1 desc
+		limit 5; -- highest track is Take It.
+```
+
 3. List all tracks along with their views and likes where `official_video = TRUE`.
+```sql
+		select track,views,likes
+		from spotify
+		where official_video = 'true'
+		order by 2 desc;select distinct(album),track, sum(views) as total_views
+		from spotify
+		group by 1 ,2
+		order by 3 desc;
+```
+
 4. For each album, calculate the total views of all associated tracks.
+```sql
+		select distinct(album),track, sum(views) as total_views
+		from spotify
+		group by 1 ,2
+		order by 3 desc;
+```
+
 5. Retrieve the track names that have been streamed on Spotify more than YouTube.
+```sql
+	-- coalesce returns non_null columns, if null then returns zero as specified
+		select * from
+		(select track,
+		coalesce (sum(case when most_played_on = 'Spotify' then stream end) ,0)as streamed_on_spotify,
+		coalesce (sum(case when most_played_on = 'Youtube' then stream end ),0)as streamed_on_Youtube
+		from spotify
+		group by 1) as t1
+		where streamed_on_spotify > streamed_on_Youtube
+		order by 2 desc;
+```
+
+
 
 ### Advanced Level
 1. Find the top 3 most-viewed tracks for each artist using window functions.
+```sql
+		With ranking_table -- ranking table is a cte common table expression, temp table
+		as
+		(select 
+				artist,	
+				track,
+				sum(views) as total_views,
+				dense_rank() over(partition by artist order by sum(views) desc) as rankings
+		from spotify
+		group by 1,2
+		order by 1 , 3 desc)
+		select * 
+		from ranking_table
+		where rankings <=3;
+```
+
 2. Write a query to find tracks where the liveness score is above the average.
+```sql
+		-- find average of liveness
+		-- liveliness score above average
+		select artist,track,liveness
+		from spotify 
+		where liveness > (select avg(liveness) as average
+		from spotify)
+		order by 3;
+```
+
 3. **Use a `WITH` clause to calculate the difference between the highest and lowest energy values for tracks in each album.**
 ```sql
-WITH cte
-AS
-(SELECT 
-	album,
-	MAX(energy) as highest_energy,
-	MIN(energy) as lowest_energery
-FROM spotify
-GROUP BY 1
-)
-SELECT 
-	album,
-	highest_energy - lowest_energery as energy_diff
-FROM cte
-ORDER BY 2 DESC
+		WITH minMaxenergy
+		as
+		(select 
+			album,
+			max(energy) as maximum_energy,
+			min(energy) as minimum_energy
+		from spotify
+		group by 1)
+		select album,maximum_energy-minimum_energy as diff_energy
+		from minMaxenergy
+		order by 2 desc;
 ```
    
 5. Find tracks where the energy-to-liveness ratio is greater than 1.2.
@@ -175,3 +273,8 @@ If you would like to contribute to this project, feel free to fork the repositor
 
 ## License
 This project is licensed under the MIT License.
+
+select track, artist, stream
+from spotify 
+where stream > 100000000
+order by stream desc;
