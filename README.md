@@ -279,7 +279,7 @@ To improve query performance, I carried out the following optimization process:
 
 - **Graphical Performance Comparison**
     - A graph illustrating the comparison betIen the initial query execution time and the optimized query execution time after index creation.
-    - **Graph view** shows the significant drop in both execution and planning times:
+    - **Graph view** shows the significant drop in both execution and planning times: (Index scan is performed)
       ![Performance Graph](https://github.com/abinash16216/spotify_sql_analysis/blob/main/index_analysis.png)
       ![Performance Graph](https://github.com/abinash16216/spotify_sql_analysis/blob/main/spotify_graph_2.png)
       ![Performance Graph](https://github.com/abinash16216/spotify_sql_analysis/blob/main/graphical_analysis.png)
